@@ -17,22 +17,26 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-@SuppressLint("NewApi")
+
 public class ImageActivity extends Activity {
 
 	private static final String TAG = "IMAGEACTIVITY";
 	private ImageView mImageView = null;
 	private Bitmap mBitmap = null;
+	private DisplayMetrics dm = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		toggleFullScreenWindow(true);
+		
 		setContentView(R.layout.image_view);
-		mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
-
-		DisplayMetrics dm = new DisplayMetrics();
+		
+		dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		
+		toggleFullScreenWindow(true);
 
+		mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
+		
 		initCompoments();
 
 	}
@@ -57,17 +61,17 @@ public class ImageActivity extends Activity {
 
 	public class MulitPointTouchListener implements OnTouchListener {
 		private static final String TAG = "MulitPointTouchListener";
-		Matrix matrix = new Matrix();
-		Matrix savedMatrix = new Matrix();
+		private Matrix matrix = new Matrix();
+		private Matrix savedMatrix = new Matrix();
 	
-		static final int NONE = 0;
-		static final int DRAG = 1;
-		static final int ZOOM = 2;
-		int mode = NONE;
+		private static final int NONE = 0;
+		private static final int DRAG = 1;
+		private static final int ZOOM = 2;
+		private int mode = NONE;
 
-		PointF start = new PointF();
-		PointF mid = new PointF();
-		float oldDist = 1f;
+		private PointF start = new PointF();
+		private PointF mid = new PointF();
+		private float oldDist = 1f;
 
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
@@ -77,16 +81,16 @@ public class ImageActivity extends Activity {
 				matrix.set(view.getImageMatrix());
 				savedMatrix.set(matrix);
 				start.set(event.getX(), event.getY());
-				Log.v("okit", "start x="+start.x+" y="+start.y);
+				Log.v(TAG, "start x="+start.x+" y="+start.y);
 				mode = DRAG;
 				break;
 			case MotionEvent.ACTION_POINTER_DOWN:
-				Log.v("bqfche", "ACTION_POINTER_DOWN");
+				Log.v(TAG, "ACTION_POINTER_DOWN");
 				oldDist = spacing(event);
 				if (oldDist > 10f) {
 					savedMatrix.set(matrix);
 					midPoint(mid, event);
-					Log.v("okit", "midpoint x="+mid.x+" y="+mid.y);
+					Log.v(TAG, "midpoint x="+mid.x+" y="+mid.y);
 					mode = ZOOM;
 				}
 				break;
@@ -102,11 +106,10 @@ public class ImageActivity extends Activity {
 							- start.y);
 
 				} else if (mode == ZOOM) {
-					Log.v("okit", "event 0 x="+event.getX(0)+" y="+event.getY(0));
-					Log.v("okit", "event 1 x="+event.getX(1)+" y="+event.getY(1));
+					Log.v(TAG, "event 0 x="+event.getX(0)+" y="+event.getY(0));
+					Log.v(TAG, "event 1 x="+event.getX(1)+" y="+event.getY(1));
 					float newDist = spacing(event);
 					Log.d(TAG, "newDist=" + newDist);
-					if (event.getHistorySize() >= 1&&newDist > 10f) {
 						 PointF p=getNowMid(event);
 						 matrix.set(savedMatrix);
 						 float xMove=p.x-mid.x;
@@ -116,7 +119,6 @@ public class ImageActivity extends Activity {
 						  float now =Float.parseFloat(String.valueOf((finalradio(p.x,start.x+xMove,event.getX(0),
 								  p.y,start.y+yMove ,event.getY(0)))));
 						  matrix.postRotate(now,p.x,p.y);
-					}
 				}
 				break;
 			}
@@ -124,12 +126,22 @@ public class ImageActivity extends Activity {
 			return true; 
 		}
 
+		/**
+		 * 
+		 * @function get middle point
+		 * 
+		 * */
 		private PointF getNowMid(MotionEvent e)
 		{
 			PointF p=new PointF();
 			p.set((e.getX(0)+e.getX(1))/2,(e.getY(0)+e.getY(1))/2);
 			return p;
 		}
+		/**
+		 * 
+		 * @function get Rotate
+		 * 
+		 * */
 		private double finalradio(float x1,float x2,float x3,float y1,float y2,float y3)
 		{
 			float xx1=x2-x1;
@@ -147,14 +159,21 @@ public class ImageActivity extends Activity {
 			}
 			
 		}
+		/**
+		 * 
+		 *  0<Rotate<360
+		 * */
 		private boolean isLagerThanPI(float x1,float x2,float y1,float y2)
 		{
 			return (x1*y2-x2*y1)<0;
 		}
+		
+		
 		private float length(float x1,float y1)
 		{
 			return  FloatMath.sqrt(x1*x1+y1*y1);
 		}
+		
 		private float dotProduct(float x1,float x2,float y1,float y2)
 		{
 			return x1*x2+y1*y2;
@@ -163,7 +182,6 @@ public class ImageActivity extends Activity {
 		private float spacing(MotionEvent event) {
 			float x = event.getX(0) - event.getX(1);
 			float y = event.getY(0) - event.getY(1);
-			
 			return FloatMath.sqrt(x * x + y * y);
 		}
 	
