@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?><FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+     android:layout_gravity="center"
+       android:id="@+id/framelayout_main" 
+       android:background="#000000">
+
+        <ImageView
+            android:id="@+id/imageView_content"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:scaleType="matrix"/>
+
+      
+
+
+               <Button
+                android:id="@+id/button_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 android:layout_gravity="bottom|right" 
+                 android:onClick="saveImage"
+                android:text="save" />
+
+
+</FrameLayout>
