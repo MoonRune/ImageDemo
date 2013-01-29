@@ -33,7 +33,7 @@ public class ImageActivity extends Activity {
 		dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-		toggleFullScreenWindow(true);
+
 
 		mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
 
@@ -47,13 +47,7 @@ public class ImageActivity extends Activity {
 		mImageView.setOnTouchListener(new MulitPointTouchListener());
 	}
 
-	protected void toggleFullScreenWindow(boolean fullScreen) {
-		if (fullScreen) {
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
-			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-					WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		}
-	}
+	
 
 	public void saveImage(View view) {
 
@@ -101,6 +95,8 @@ public class ImageActivity extends Activity {
 
 				break;
 			case MotionEvent.ACTION_UP:
+				mode = NONE;
+				break;
 			case MotionEvent.ACTION_POINTER_UP:
 				// 动作完成
 				mode = NONE;
@@ -208,4 +204,5 @@ public class ImageActivity extends Activity {
 			point.set(x / 2, y / 2);
 		}
 	}
+	
 }
